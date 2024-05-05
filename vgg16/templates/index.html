@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=2.0">
+  <title>Know Your Butterfly</title>
+  <style>
+    /* Add your existing styles here */
+    .container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .title-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      color: rgb(0, 0, 0);
+      font-style: italic;
+      font-size: 3.5em;
+      margin-right: 20px;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      align-items: normal;
+    }
+
+    img {
+      max-width: 300px;
+      height: auto;
+    }
+
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    #upload-btn,
+    #submit-btn {
+      background-color: black;
+      color: white;
+      padding: 15px 40px;
+      border: none;
+      cursor: pointer;
+      margin: 0 4px;
+      font-size: 1.8em;
+      border-radius: 5px;
+      font-style: italic;
+    }
+
+    #submit-btn {
+      display: none;
+    }
+
+    .prediction {
+      color: black;
+      font-style: italic;
+      font-size: 2.2em;
+    }
+
+    #upload-btn.dragover {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title-container">
+      <h1 class="title">Know Your Butterfly</h1>
+    </div>
+    <div class="image-container">
+      <img src="{{ url_for('static', filename='images.jpeg') }}" alt="Image 1">
+      <img src="{{ url_for('static', filename='images (4).jpg') }}" alt="Image 2">
+    </div>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+      <input type="file" id="file-input" name="file" onchange="showPredictButton()">
+      <label for="file-input" id="upload-btn" ondragover="dragover(event)" ondrop="dropped(event)">Upload</label>
+      <input type="submit" id="submit-btn" value="Predict">
+    </form>
+    {% if prediction_text %}
+    <h2 class="prediction">{{ prediction_text }}</h2>
+    {% endif %}
+    {% if image_path %}
+    <img src="{{ image_path }}" alt="Predicted Image">
+    {% endif %}
+  </div>
+  <script>
+    function showPredictButton() {
+      document.getElementById('submit-btn').style.display = 'inline';
+    }
+
+    function dragover(event) {
+      event.preventDefault();
+      document.getElementById('upload-btn').classList.add('dragover');
+    }
+
+    function dropped(event) {
+      event.preventDefault();
+      document.getElementById('upload-btn').classList.remove('dragover');
+      const file = event.dataTransfer.files[0];
+      document.getElementById('file-input').files = event.dataTransfer.files;
+      showPredictButton();
+    }
+  </script>
+</body>
+</html>
